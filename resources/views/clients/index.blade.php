@@ -1,34 +1,29 @@
-{{-- @extends('layouts.app')
+@extends('layout')
 
 @section('content')
-    <h1>Client List</h1>
-    <ul>
-        @foreach ($clients as $client)
-            <li>{{ $client->name }} - {{ $client->email }} - {{ $client->phone }}</li>
-        @endforeach
-    </ul>
-@endsection --}}
-
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Clients List</title>
-</head>
-<body>
-    <h1>Welcome, {{ Auth::user()->name }}!</h1>
-    
-    <h2>Clients:</h2>
-    <ul>
-        {{-- @foreach ($clients as $client)
-            <li>{{ $client->name }} ({{ $client->email }}) - {{ $client->phone }}</li>
-        @endforeach --}}
-    </ul>
-
-    <form action="{{ route('logout') }}" method="POST">
-        @csrf
-        <button type="submit">Logout</button>
-    </form> 
-</body>
-</html>
-
+<div class="container">
+    <h1>Clients List</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Business Credentials ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($clients as $client)
+                <tr>
+                    <td>{{ $client->id }}</td>
+                    <td>{{ $client->name }}</td>
+                    <td>{{ $client->email }}</td>
+                    <td>{{ $client->phone }}</td>
+                    <td>{{ $client->business_credentials_id }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+@endsection

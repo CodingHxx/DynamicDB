@@ -67,4 +67,9 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'dynamic_db' => \App\Http\Middleware\DynamicDatabaseSwitcher::class,
     ];
+
+    protected $routeMiddleware = [
+        // ... other middleware
+        'has.business.credentials' => \App\Http\Middleware\HasBusinessCredentials::class,
+    ];
 }

@@ -11,19 +11,36 @@ class AuthController extends Controller
     {
         return view('auth.login');
     }
+
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
         if (Auth::attempt($credentials)) {
-            return redirect()->route('clients.index')->with('success', 'Logged in successfully!');
+            $request->session()->regenerate();
+            
+            // Check if user has business credentials
+            if (!auth()->user()->businessCredentials) {
+                return redirect()->route('business.setup')
+                    ->with('info', 'Please complete your business profile setup to access all features.');
+            }
+
+            return redirect()->intended('/clients');
         }
-        return back()->with('error', 'Invalid credentials!');
+
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ]);
     }
+
     public function logout(Request $request)
     {
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/login');
+        return redirect('/');
     }
 }

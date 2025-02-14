@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
@@ -21,6 +21,12 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
         });
+
+        Schema::table('clients', function (Blueprint $table) {
+            $table->unsignedBigInteger('business_credentials_id')->nullable();
+            // Add foreign key constraint if needed
+            // $table->foreign('business_credentials_id')->references('id')->on('business_credentials');
+        });
     }
 
     /**
@@ -28,6 +34,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::table('users', function (Blueprint $table) {
+            //
+        });
     }
 };

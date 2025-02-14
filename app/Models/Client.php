@@ -2,12 +2,35 @@
 
 namespace App\Models;
 
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
-class Client extends Model
+class Client extends Authenticatable
 {
-    protected $connection = 'Business_mysql';
     protected $table = 'clients';
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'email',
+        'phone',
+        'business_credentials_id',
+        // other fields
+    ];
+
+    protected $hidden = [
+        'password',
+    ];
+
+    protected $connection = 'dynamic_db';
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function businessCredentials()
+    {
+        return $this->belongsTo(BusinessCredentials::class, 'business_credentials_id');
+    }
 }

@@ -32,6 +32,16 @@ class User extends Authenticatable
         return $this->hasOne(BusinessCredential::class, 'user_id', 'id');
     }
 
+    public function businessCredentials()
+    {
+        return $this->belongsTo(BusinessCredentials::class, 'business_credentials_id');
+    }
+
+    public function clients()
+    {
+        return $this->hasMany(Client::class);
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *
