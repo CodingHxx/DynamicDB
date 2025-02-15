@@ -2,8 +2,13 @@
 
 @section('content')
 <div class="container">
-    <h1>Clients List</h1>
-    <table class="table">
+<div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Clients List</h1>
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit" class="btn btn-danger">Logout</button>
+        </form>
+    </div>    <table class="table">
         <thead>
             <tr>
                 <th>ID</th>

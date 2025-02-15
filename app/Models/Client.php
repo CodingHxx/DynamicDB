@@ -15,7 +15,7 @@ class Client extends Authenticatable
         'email',
         'phone',
         'business_credentials_id',
-        // other fields
+        'user_id',
     ];
 
     protected $hidden = [
@@ -26,7 +26,7 @@ class Client extends Authenticatable
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function businessCredentials()

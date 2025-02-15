@@ -4,6 +4,7 @@ use App\Http\Controllers\ClientController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BusinessController;
+use App\Http\Controllers\AuthenticatedSessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,7 +29,8 @@ use App\Http\Controllers\BusinessController;
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register','App\Http\Controllers\AuthController@register')->name('register.post');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->name('logout');
 
 Route::middleware('auth')->group(function () {
     // Route::get('/dashboard', function () {
@@ -44,4 +46,10 @@ Route::middleware('auth')->group(function () {
         });
     });
 });
+
+// For client logout
+Route::post('/client/logout', [ClientController::class, 'logout'])->name('client.logout');
+
+// For business logout
+Route::post('/business/logout', [BusinessController::class, 'logout'])->name('business.logout');
 

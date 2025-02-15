@@ -3,54 +3,43 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Symfony\Component\HttpFoundation\Response;
 
 class DynamicDatabaseSwitcher
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
-    public function handle(Request $request, Closure $next): Response
+    public function handle($request, Closure $next)
     {
-            // return $request;
-         if (Auth::check()) {
-             $credentials = Auth::user()->businessCredential;
-            
-            if ($credentials) {
-                // config([
-                //     'database.connections.Business_mysql.host' => $credentials->db_host ?? env('Business_DB_HOST'),
-                //     'database.connections.Business_mysql.database' => $credentials->db_name,
-                //     'database.connections.Business_mysql.username' => $credentials->db_username,
-                //     'database.connections.Business_mysql.password' => $credentials->db_password,
-                // ]);
+        if (Auth::check() && Auth::user()->businessCredentials) {
+            $credentials = Auth::user()->businessCredentials;
 
-                // DB::purge('Business_mysql');
-                // DB::reconnect('Business_mysql');
-                
-                // $runtimeConnectionConfig = array_merge(config('database.connections.Business_mysql'), [
-                //     'host' =>  $credentials->db_host ?? env('Business_DB_HOST'),
-                //     'database' => $credentials->db_name,
-                //     'user' => $credentials->db_username,
-                //     'password' => $credentials->db_password,
-                // ]);
-                
-                // config(['database.connections.Business_mysql' => $runtimeConnectionConfig]);
-                
-                // $runtimeConnection = DB::connection('Business_mysql');
-                return  "0";
-                // return $runtimeConnection->table('clients')->get();
-                // return $next($request);
-            } else {
-                return redirect('/login')->with('error', 'Business credentials not found.');
+            // Configure dynamic database connection
+            config([
+                'database.connections.dynamic_db' => [
+                    'driver' => 'mysql',
+                    'host' => $credentials->db_host,
+                    'port' => $credentials->db_port ?? '3306',
+                    'database' => $credentials->db_name,
+                    'username' => $credentials->db_username,
+                    'password' => $credentials->db_password ?? '',
+                    'charset' => 'utf8mb4',
+                    'collation' => 'utf8mb4_unicode_ci',
+                    'prefix' => '',
+                    'strict' => true,
+                    'engine' => null,
+                ]
+            ]);
+
+            // Test the connection
+            try {
+                DB::connection('dynamic_db')->getPdo();
+            } catch (\Exception $e) {
+                Log::error('Failed to connect to dynamic database: ' . $e->getMessage());
+                return redirect()->route('business.setup')
+                    ->with('error', 'Failed to connect to your business database. Please check your credentials.');
             }
         }
-
 
         return $next($request);
     }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\BusinessCredentials;
+use Illuminate\Support\Facades\Auth;
 
 class BusinessController extends Controller
 {
@@ -43,5 +44,14 @@ class BusinessController extends Controller
         ]);
 
         return redirect('/clients')->with('success', 'Business profile setup complete!');
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::guard('business')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        
+        return redirect('/')->with('success', 'You have been logged out successfully.');
     }
 } 

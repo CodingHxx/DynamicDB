@@ -7,6 +7,7 @@ use App\Models\BusinessCredentials;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class ClientController extends Controller
 {
@@ -44,7 +45,7 @@ class ClientController extends Controller
                     'engine' => null,
                 ]
             ]);
-
+                    
             // Test the connection
             DB::connection('dynamic_db')->getPdo();
 
@@ -59,5 +60,14 @@ class ClientController extends Controller
             Log::error('Error in ClientController@index: ' . $e->getMessage());
             return redirect()->back()->withErrors(['error' => 'Failed to load clients: ' . $e->getMessage()]);
         }
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::guard('client')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        
+        return redirect('/')->with('success', 'You have been logged out successfully.');
     }
 }
