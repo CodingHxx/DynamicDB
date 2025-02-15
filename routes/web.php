@@ -29,8 +29,9 @@ use App\Http\Controllers\AuthenticatedSessionController;
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register','App\Http\Controllers\AuthController@register')->name('register.post');
-Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
-    ->name('logout');
+// Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+//     ->name('logout');
+Route::post('/logout','App\Http\Controllers\AuthController@logout')->name('logout');
 
 Route::middleware('auth')->group(function () {
     // Route::get('/dashboard', function () {
